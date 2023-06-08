@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "569203130171",
+    "project_id": "city-alert-api",
+    "storage_bucket": "city-alert-api.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569203130171:android:689e733b9f960606e6411e",
+        "android_client_info": {
+          "package_name": "br.com.univates.city_alert_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdAFlAoQP3O3pyc-y6mYfh3CJHJSflsdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
