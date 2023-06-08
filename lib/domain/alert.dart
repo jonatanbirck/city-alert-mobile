@@ -1,9 +1,15 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-enum AlertType { trash, dirtyPlace, brokenGlass, animalWaste }
+enum AlertType {
+  TRASH,
+  DIRTY_PLACE,
+  BROKEN_GLASS,
+  ANIMAL_WASTE
+}
 
 class Alert {
 
+  final int id;
   final String photo; //base64
   final LatLng position;
   final int routeId;
@@ -11,6 +17,7 @@ class Alert {
   final String observation;
 
   Alert({
+    required this.id,
     required this.photo,
     required this.position,
     required this.routeId,
@@ -20,6 +27,7 @@ class Alert {
 
   factory Alert.fromJson(dynamic json) {
     return Alert(
+        id: json['id'] as int,
         photo: json['photo'] as String,
         position: json['position'] as LatLng,
         routeId: json['routeId'] as int,

@@ -1,6 +1,7 @@
+import 'package:city_alert_mobile/pages/subpage/route_details.dart';
 import 'package:flutter/material.dart';
 
-import '../controllers/RoutesController.dart';
+import '../controllers/routes_controller.dart';
 import '../domain/route.dart';
 
 class RoutesPage extends StatefulWidget {
@@ -12,12 +13,13 @@ class RoutesPage extends StatefulWidget {
 
 class _RoutesPage extends State<RoutesPage> {
 
-  final RoutesController _routesController = RoutesController();
-  late List<RouteApp> _routes;
+  late RoutesController _routesController;
+  List<RouteApp> _routes = [];
 
   @override
   void initState() {
     super.initState();
+    _routesController = RoutesController();
     setRoutes();
   }
 
@@ -26,6 +28,13 @@ class _RoutesPage extends State<RoutesPage> {
     setState(() {
       _routes = routes;
     });
+  }
+
+  void _goToDetailScreen(RouteApp route) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RouteDetails(route: route)),
+    );
   }
 
   @override
@@ -37,6 +46,10 @@ class _RoutesPage extends State<RoutesPage> {
           final item = _routes[index];
           return ListTile(
             title: Text(item.name),
+            subtitle: Text("Alertas realizados: ${item.alerts.length}"),
+            leading: const Icon(Icons.route),
+            trailing: const Icon(Icons.info_outline),
+            onTap: () => _goToDetailScreen(item),
           );
         },
       ),

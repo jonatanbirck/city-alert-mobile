@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'alerts_page.dart';
 import 'information_page.dart';
 import 'maps_page.dart';
 import 'routes_page.dart';
@@ -19,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pages = const [
     MapsPage(),
     RoutesPage(),
-    AlertsPage(),
     InformationPage()
   ];
 
@@ -41,8 +39,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         shadowColor: Colors.black,
         elevation: 4,
-        backgroundColor: Colors.blue,
-        title: const Text("City Alert", style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.indigo,
+        title: const Text("Cidade Limpa", style: TextStyle(color: Colors.white),),
       ),
       body: IndexedStack(
         index: _selectedIndex,
@@ -57,10 +55,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.route),
             label: "Rotas",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.announcement_outlined),
-            label: "Alertas",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.info_outline),
