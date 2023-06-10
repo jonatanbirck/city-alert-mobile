@@ -23,10 +23,14 @@ class RouteApp {
     return RouteApp(
         id: json['id'] as int,
         name: json['name'] as String,
-        positions: json['positions'] as List<LatLng>,
-        alerts: json['alerts'] as List<Alert>,
-        startPosition: json['startPosition'] as LatLng,
-        endPosition: json['endPosition'] as LatLng
+        positions: (json['positions'] as List<dynamic>)
+            .map((position) => LatLng(position['latitude'], position['longitude']))
+            .toList(),
+        alerts: (json['alerts'] as List<dynamic>)
+            .map((alert) => Alert.fromJson(alert))
+            .toList(),
+        startPosition: LatLng(json['startPosition']['latitude'], json['startPosition']['longitude']),
+        endPosition: LatLng(json['endPosition']['latitude'], json['endPosition']['longitude'])
     );
   }
 

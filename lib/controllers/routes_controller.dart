@@ -2,52 +2,43 @@ import 'dart:convert';
 
 import 'package:city_alert_mobile/domain/dto/route_create.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:http/http.dart' as http;
+
 import '../domain/route.dart';
-import '../util/MockObjects.dart';
 
 class RoutesController {
 
   final List<RouteApp> routes = [];
 
-  //Future<List<RouteApp>> findAll() async {
-  //  final response = await http.get(Uri.parse('http://localhost:8080/api/routes'));
-//
-  //  if (response.statusCode == 200) {
-  //    final List<dynamic> data = jsonDecode(response.body);
-  //    List<RouteApp> routes = [];
-  //    for (var item in data) {
-  //      routes.add(RouteApp.fromJson(item));
-  //    }
-  //    return routes;
-  //  } else {
-  //    throw Exception('Falha ao buscar dados da API');
-  //  }
-  //}
-
   Future<List<RouteApp>> findAll() async {
-    routes.addAll(MockObjects.createManyRoute(25));
-    return routes;
+    final response = await http.get(Uri.parse('http://192.168.2.103:8080/api/routes'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+      List<RouteApp> routes = [];
+      for (var item in data) {
+        routes.add(RouteApp.fromJson(item));
+      }
+      return routes;
+    } else {
+      throw Exception('Falha ao buscar dados da API');
+    }
   }
 
-  RouteApp save(RouteCreate route) {
-    return RouteApp(
-        id: 1,
-        name: route.name as String,
-        positions: route.positions ?? [],
-        alerts: [],
-        startPosition: route.startPosition as LatLng,
-        endPosition: route.endPosition as LatLng
+  Future<void> save(RouteCreate route) async {
+    final url = Uri.parse('http://192.168.2.103:8080/api/routes'); // Substitua pelo seu URL de endpoint
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(route.toJson()),
     );
-  }
 
-  void insert(RouteApp route) {
-    routes.add(route);
-  }
-
-  void create(RouteApp route) async {
-    routes.add(route);
+    if (response.statusCode == 200) {
+      print('Objeto salvo com sucesso!');
+    } else {
+      print('Falha ao salvar o objeto. Status code: ${response.statusCode}');
+    }
   }
 
 

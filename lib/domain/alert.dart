@@ -4,7 +4,8 @@ enum AlertType {
   TRASH,
   DIRTY_PLACE,
   BROKEN_GLASS,
-  ANIMAL_WASTE
+  ANIMAL_WASTE,
+  unknown
 }
 
 class Alert {
@@ -26,12 +27,17 @@ class Alert {
   });
 
   factory Alert.fromJson(dynamic json) {
+    final alertTypeString = json['type'] as String;
+    final alertType = AlertType.values.firstWhere(
+          (type) => type.toString().split('.').last == alertTypeString,
+      orElse: () => AlertType.unknown,
+    );
     return Alert(
         id: json['id'] as int,
         photo: json['photo'] as String,
-        position: json['position'] as LatLng,
+        position: LatLng(json['position']['latitude'], json['position']['longitude']),
         routeId: json['routeId'] as int,
-        type: json['type'] as AlertType,
+        type: alertType,
         observation: json['observation'] as String
     );
   }

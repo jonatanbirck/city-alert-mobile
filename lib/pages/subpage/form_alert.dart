@@ -1,19 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/dto/route_form.dart';
+import '../../domain/dto/alert_form.dart';
 
-class FormRoute extends StatefulWidget {
-  const FormRoute({Key? key}) : super(key: key);
+class FormAlert extends StatefulWidget {
+  const FormAlert({Key? key}) : super(key: key);
 
   @override
-  State<FormRoute> createState() => _FormRoute();
+  State<FormAlert> createState() => _FormAlert();
 }
 
-class _FormRoute extends State<FormRoute> {
+class _FormAlert extends State<FormAlert> {
 
   final _formKey = GlobalKey<FormState>();
-  final _textFieldController = TextEditingController();
+  String selectedType = 'Lixo';
+  TextEditingController observationController = TextEditingController();
+  List<String> types = ['Lixo', 'Lugar sujo', 'Vidro quebrado', 'Dejetos de animais'];
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class _FormRoute extends State<FormRoute> {
         backgroundColor: Colors.indigo,
         titleSpacing: 0,
         title: const Text(
-          "Cadastro de rota",
+          "Cadastro de alerta",
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -37,10 +38,28 @@ class _FormRoute extends State<FormRoute> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _textFieldController,
+              DropdownButtonFormField<String>(
+                value: selectedType,
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedType = newValue!;
+                  });
+                },
                 decoration: const InputDecoration(
-                    labelText: 'Nome da Rota',
+                  labelText: 'Selecione a categoria',
+                ),
+                items: types.map((type) {
+                  return DropdownMenuItem<String>(
+                    value: type,
+                    child: Text(type),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: observationController,
+                decoration: const InputDecoration(
+                    labelText: 'Observação',
                     contentPadding: EdgeInsets.only(top: 1)
                 ),
                 validator: (value) {
@@ -57,10 +76,10 @@ class _FormRoute extends State<FormRoute> {
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pop(context, RouteForm(_textFieldController.text));
+                        Navigator.pop(context, AlertForm(selectedType, observationController.text));
                       }
                     },
-                    child: const Text('Iniciar Rota'),
+                    child: const Text('Registrar alerta'),
                   ),
                   const SizedBox(width: 20.0),
                   ElevatedButton(

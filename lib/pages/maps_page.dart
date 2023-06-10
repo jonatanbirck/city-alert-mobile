@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera_camera/camera_camera.dart';
-import 'package:city_alert_mobile/controllers/alerts_controller.dart';
 import 'package:city_alert_mobile/controllers/routes_controller.dart';
-import 'package:city_alert_mobile/domain/alert.dart';
 import 'package:city_alert_mobile/domain/dto/route_create.dart';
-import 'package:city_alert_mobile/domain/route.dart';
+import 'package:city_alert_mobile/pages/subpage/form_alert.dart';
 import 'package:city_alert_mobile/pages/subpage/form_route.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,6 +13,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../controllers/map_controller.dart';
 import '../domain/dto/alert_create.dart';
+import '../domain/dto/alert_form.dart';
 import '../domain/dto/route_form.dart';
 import 'home_page.dart';
 
@@ -28,15 +27,12 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
 
   final mapsController = MapsController();
-  final alertsController = AlertsController();
   final routesController = RoutesController();
   late GoogleMapController _mapController;
   late LatLng _location;
   bool _isLoading = true;
   bool _isRecording = false;
-
   RouteCreate route = RouteCreate();
-  List<AlertCreate> alerts = [];
 
   @override
   void initState() {
@@ -89,16 +85,27 @@ class _MapsPageState extends State<MapsPage> {
     _mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
-  void _makePhoto(File file) {
-    String photoBase64 = base64Encode(file.readAsBytesSync());
-    AlertCreate alert = AlertCreate();
-    alert.position = _location;
-    alert.photo = photoBase64;
+  void _makePhoto(File file) async {
+    Navigator.pop(context);
+    /*
     alert.type = AlertType.TRASH;
     alert.observation = "observation";
-    alerts.add(alert);
-    Navigator.pop(context);
-    setState(() {});
+     */
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FormAlert()),
+    );
+
+    if (result != null && result is AlertForm) {
+      AlertCreate alert = AlertCreate();
+      alert.position = _location;
+      alert.photo = base64Encode(file.readAsBytesSync());
+      alert.type = result.getRightType();
+      alert.observation = result.observation;
+      setState(() {
+        route.alerts?.add(alert);
+      });
+    }
   }
 
   void _stopRecording() {
@@ -106,17 +113,13 @@ class _MapsPageState extends State<MapsPage> {
       _isRecording = false;
     });
     route.endPosition = _location;
-    saveAll();
+    saveRoute();
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage(selectedIndex: 1)));
   }
 
-  void saveAll() {
-    RouteApp routeApp = routesController.save(route);
-    for (AlertCreate alertCreate in alerts) {
-      Alert alert = alertsController.save(alertCreate, routeApp.id);
-      routeApp.alerts.add(alert);
-    }
-    routesController.insert(routeApp);
+  void saveRoute() {
+    routesController.save(route);
+    route = RouteCreate();
   }
 
   @override
