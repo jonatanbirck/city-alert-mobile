@@ -35,6 +35,7 @@ class _MapsPageState extends State<MapsPage> {
   bool _isLoading = true;
   bool _isRecording = false;
   RouteCreate route = RouteCreate();
+  Set<Marker> markers = {};
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _MapsPageState extends State<MapsPage> {
     StreamSubscription<Position> positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position? position) {
       if (_isRecording && position != null) {
         route.positions?.add(LatLng(position.latitude, position.longitude));
+        setState(() {});
       }
     });
   }
@@ -68,6 +70,7 @@ class _MapsPageState extends State<MapsPage> {
     if (result != null && result is RouteForm) {
       setState(() {
         _isRecording = true;
+        markers.add(Marker(markerId: const MarkerId("Start"), position: _location));
         route.name = result.routeName;
         route.startPosition = _location;
       });
@@ -120,6 +123,7 @@ class _MapsPageState extends State<MapsPage> {
   void _stopRecording() {
     setState(() {
       _isRecording = false;
+      markers.clear();
     });
     route.endPosition = _location;
     saveRoute();
@@ -144,10 +148,19 @@ class _MapsPageState extends State<MapsPage> {
             zoomControlsEnabled: false,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
+            markers: markers,
             initialCameraPosition: CameraPosition(
               target: _location,
               zoom: 16.0,
             ),
+            polylines: {
+              Polyline(
+                polylineId: const PolylineId('route'),
+                color: Colors.blue,
+                width: 5,
+                points: route.positions,
+              ),
+            },
           ),
           Positioned(
             bottom: 32.0, // Posição vertical desejada
