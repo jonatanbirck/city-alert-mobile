@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:city_alert_mobile/domain/dto/route_create.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../domain/route.dart';
@@ -11,7 +10,7 @@ class RoutesController {
   final List<RouteApp> routes = [];
 
   Future<List<RouteApp>> findAll() async {
-    final response = await http.get(Uri.parse('http://192.168.2.103:8080/api/routes'));
+    final response = await http.get(Uri.parse('http://192.168.2.104:8011/api/routes'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
@@ -26,7 +25,7 @@ class RoutesController {
   }
 
   Future<void> save(RouteCreate route) async {
-    final url = Uri.parse('http://192.168.2.103:8080/api/routes'); // Substitua pelo seu URL de endpoint
+    final url = Uri.parse('http://192.168.2.104:8011/api/routes'); // Substitua pelo seu URL de endpoint
 
     final response = await http.post(
       url,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:camera_camera/camera_camera.dart';
 import 'package:city_alert_mobile/controllers/routes_controller.dart';
@@ -8,6 +9,7 @@ import 'package:city_alert_mobile/domain/dto/route_create.dart';
 import 'package:city_alert_mobile/pages/subpage/form_alert.dart';
 import 'package:city_alert_mobile/pages/subpage/form_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -85,12 +87,19 @@ class _MapsPageState extends State<MapsPage> {
     _mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
+  Future<Uint8List> compressFile(File file) async {
+    var result = await FlutterImageCompress.compressWithFile(
+      file.absolute.path,
+      minHeight: 10,
+      minWidth: 10,
+      quality: 20
+    );
+    return result!;
+  }
+
   void _makePhoto(File file) async {
     Navigator.pop(context);
-    /*
-    alert.type = AlertType.TRASH;
-    alert.observation = "observation";
-     */
+
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const FormAlert()),
@@ -172,6 +181,7 @@ class _MapsPageState extends State<MapsPage> {
                           MaterialPageRoute(
                               builder: (_) => CameraCamera(
                                 onFile: _makePhoto,
+                                resolutionPreset: ResolutionPreset.low
                               )
                           )
                       );

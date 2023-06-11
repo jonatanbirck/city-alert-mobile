@@ -13,7 +13,6 @@ class Alert {
   final int id;
   final String photo; //base64
   final LatLng position;
-  final int routeId;
   final AlertType type;
   final String observation;
 
@@ -21,7 +20,6 @@ class Alert {
     required this.id,
     required this.photo,
     required this.position,
-    required this.routeId,
     required this.type,
     required this.observation
   });
@@ -36,7 +34,6 @@ class Alert {
         id: json['id'] as int,
         photo: json['photo'] as String,
         position: LatLng(json['position']['latitude'], json['position']['longitude']),
-        routeId: json['routeId'] as int,
         type: alertType,
         observation: json['observation'] as String
     );

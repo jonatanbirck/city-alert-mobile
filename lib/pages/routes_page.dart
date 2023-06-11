@@ -42,8 +42,8 @@ class _RoutesPage extends State<RoutesPage> {
       );
 
       if (placemarks != null && placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[0];
-        String address = '${placemark.name}, ${placemark.locality}';
+        Placemark placemark = placemarks[1];
+        String address = '${placemark.street}, ${placemark.subAdministrativeArea}';
         return address;
       }
     } catch (e) {

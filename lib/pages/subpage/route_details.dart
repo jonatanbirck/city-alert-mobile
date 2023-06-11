@@ -88,6 +88,13 @@ class _RouteDetails extends State<RouteDetails> {
               'Final: ${route.addressFinish}',
             ),
             const SizedBox(height: 16.0),
+            route.alerts.isEmpty ?
+            const Center(
+              child: Text(
+                'Não registrado alertas!',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ) :
             const Center(
               child: Text(
                 'Alertas',
